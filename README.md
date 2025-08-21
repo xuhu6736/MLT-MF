@@ -29,14 +29,14 @@ Chinese version of the paper:
 
 ---
 
-## 📂 仓库结构
-
-├── datasets/ # 论文实验所用数据集
-├── Generalization_error_experiment/ # 泛化误差实验代码
-├── Interpretability_experiments/ # 可解释性实验代码
-├── Ethical_experiments/ # 伦理检测实验代码
-└── README.md # 本说明文档
-
+## 📂 仓库结构  
+  
+├── datasets/ # 论文实验所用数据集  
+├── Generalization_error_experiment/ # 泛化误差实验代码  
+├── Interpretability_experiments/ # 可解释性实验代码  
+├── Ethical_experiments/ # 伦理检测实验代码  
+└── README.md # 本说明文档  
+  
 
 ## 🚀 使用方法
 
