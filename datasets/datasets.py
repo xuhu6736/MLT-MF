@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# 确保中文显示正常
-plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
+# 修改字体设置
+plt.rcParams["font.family"] = "Arial"
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 np.random.seed(43)
@@ -13,7 +13,7 @@ def generate_datasets():
     train_samples = 10000  # 训练集样本数量
     test_samples = 10000   # 每个测试集样本数量
     # 四个测试集的中心点
-    test_centers = [(-1,-1),(1.5, 1)]
+    test_centers = [(1.5, 1)]
     # 圆形分布半径
     circle_radius = 0.5
 
@@ -71,16 +71,19 @@ def generate_datasets():
     plt.figure(figsize=(12, 8))
 
     # 绘制训练集
-    plt.scatter(train_df['x1'], train_df['x2'], alpha=0.5, label='训练集 (均匀分布)', s=10)
+    #plt.scatter(train_df['x1'], train_df['x2'], alpha=0.5, label='Training Datasets (Uniform Distribution)', s=10, color='slateblue')
+    plt.scatter(train_df['x1'], train_df['x2'], alpha=0.5, label='Training Datasets (Uniform Distribution)', s=10, color='blue')
 
     # 绘制四个测试集
+    #colors = ['g', 'green', 'blue', 'purple']
     colors = ['red', 'green', 'blue', 'purple']
+
     for i, (test_df, (center_x, center_y)) in enumerate(zip(test_dfs, test_centers)):
-        plt.scatter(test_df['x1'], test_df['x2'], alpha=0.3, label=f'测试集 {i+1} (中心: ({center_x},{center_y}))(均匀分布)', s=10, color=colors[i])
+        plt.scatter(test_df['x1'], test_df['x2'], alpha=0.3, label=f'Test Datasets (Center: ({center_x},{center_y}))(Uniform Distribution)', s=10, color=colors[i])
 
     plt.xlabel('x1')
     plt.ylabel('x2')
-    plt.title('数据分布')
+    plt.title('Data Distribution')
     plt.legend()
     plt.grid(True)
 
@@ -88,7 +91,7 @@ def generate_datasets():
     plt.savefig('./datasets/data_distribution.png', dpi=300)
     plt.show()
     plt.close()
-    print('数据分布图已保存到 ./datasets/data_distribution.png')
+    print('Data distribution plot saved to ./datasets/data_distribution.png')
 
     return train_df, test_dfs
 

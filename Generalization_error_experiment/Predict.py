@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 from model import FeedForwardNN
 from torch.utils.data import TensorDataset
 
-# 确保中文显示正常
-plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
-plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+# 设置字体为 Arial
+plt.rcParams["font.family"] = "Arial"
+plt.rcParams['axes.unicode_minus'] = False  # Solve the problem of negative sign display
 
 # 检查是否有 GPU 可用
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -52,6 +52,7 @@ for step in training_steps:
         continue
     
     sampled_data = subset_data.sample(n=10, random_state=42)  # 重叠固定随机种子确保可复现
+    #print(sampled_data)
     #sampled_data = train_data.iloc[training_steps[-2]:training_steps[-1]].sample(n=10, random_state=42)#重叠近邻
     # 准备输入数据
     X_sample = torch.tensor(sampled_data[['x1', 'x2']].values, dtype=torch.float32).to(device)
@@ -75,14 +76,15 @@ for step in training_steps:
 plt.figure(figsize=(10, 6))
 for step in list(all_errors.keys())[:-1]:#重叠近邻
     errors = all_errors[step]
-#for step, errors in all_errors.items():#重叠
-    plt.plot(range(1, 11), errors, marker='o', label=f'训练步数={step}')
+#for step, errors in all_errors.items():# Overlapping
+    plt.plot(range(1, 11), errors, marker='o', label=f'Training Steps={step}')
 
-
-plt.xlabel('样本点索引')
-plt.ylabel('均方根误差 (RMSE)')
-plt.title('不同训练步数模型的重叠样本预测误差对比')
+plt.xlabel('Sample Index')
+plt.ylabel('Root Mean Squared Error (RMSE)')
+plt.title('Comparison of Prediction Errors for Overlapping Samples of Models with Different Training Steps')
 plt.xticks(range(1, 11))
+# 设置纵坐标上限为 3
+plt.ylim(top=3.2)
 plt.legend()
 plt.grid(True)
 
@@ -91,4 +93,4 @@ output_path = './泛化误差实验/result/sample_error_comparison.png'
 plt.savefig(output_path, dpi=300)
 plt.show()
 plt.close()
-print(f'误差对比图已保存到: {output_path}')
+print(f'Error comparison plot saved to: {output_path}')

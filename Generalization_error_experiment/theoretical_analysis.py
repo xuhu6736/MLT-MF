@@ -7,9 +7,17 @@ import torch
 from model import FeedForwardNN
 import math
 
-# 确保中文显示正常
-plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
-plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+# 设置字体为 Arial
+plt.rcParams["font.family"] = "Arial"
+plt.rcParams['axes.unicode_minus'] = False  # Solve the problem of negative sign display
+
+# 调大所有图的标识字号
+plt.rcParams["font.size"] = 14  # 全局默认字体大小
+plt.rcParams["axes.titlesize"] = 16  # 图表标题字体大小
+plt.rcParams["axes.labelsize"] = 14  # 坐标轴标签字体大小
+plt.rcParams["xtick.labelsize"] = 12  # x轴刻度字体大小
+plt.rcParams["ytick.labelsize"] = 12  # y轴刻度字体大小
+plt.rcParams["legend.fontsize"] = 14  # 图例字体大小
 
 # 创建结果文件夹
 os.makedirs('./泛化误差实验/theoretical_results', exist_ok=True)
@@ -55,13 +63,13 @@ def calculate_theoretical_error():
         plt.figure(figsize=(12, 8))
         # 绘制重叠部分
         if not overlap_data.empty:
-            plt.scatter(overlap_data['x1'], overlap_data['x2'], c='blue', alpha=0.6, label='重叠部分')
+            plt.scatter(overlap_data['x1'], overlap_data['x2'], c='blue', alpha=0.6, label='Overlapping Part')
         # 绘制不重叠部分
         if not non_overlap_data.empty:
-            plt.scatter(non_overlap_data['x1'], non_overlap_data['x2'], c='red', alpha=0.6, label='不重叠部分')
+            plt.scatter(non_overlap_data['x1'], non_overlap_data['x2'], c='red', alpha=0.6, label='Non-overlapping Part')
         plt.xlabel('x1')
         plt.ylabel('x2')
-        plt.title(f'{test_file} 数据重叠与不重叠部分分布')
+        plt.title(f'Distribution of Overlapping and Non-overlapping Data in {test_file}')
         plt.legend()
         plt.grid(True, alpha=0.3)
         # 保存图片
@@ -220,22 +228,22 @@ def calculate_theoretical_error():
         colors = plt.cm.tab10(np.linspace(0, 1, len(training_steps)))
         for i, (step, rmse_values) in enumerate(model_predictions.items()):
             plt.plot(range(len(rmse_values)), rmse_values, 'o-', color=colors[i], 
-                     linewidth=2, markersize=6, label=f'模型预测误差 (步数{step})')
+                     linewidth=2, markersize=6, label=f'Model (Step {step})')
         
         # 绘制单一保守估计误差线
         plt.plot(range(len(conservative_estimates)), conservative_estimates, 'b--', 
-                 linewidth=3, alpha=0.8, label='保守估计误差')
+                 linewidth=3, alpha=0.8, label='Conservative Estimation')
         
         # 添加理论误差横线
         theoretical_colors = ['r', 'g', 'orange', 'purple', 'brown']
         if not np.isnan(loss_val):
             plt.axhline(y=loss_val, color=theoretical_colors[0], 
                        linestyle=':', linewidth=3, alpha=0.8,
-                       label=f'理论最大泛化误差{loss_val:.4f}')
+                       label=f'TVD {loss_val:.4f}')
         
-        plt.xlabel('测试样本索引')
-        plt.ylabel('均方根误差')
-        plt.title(f'非重叠区不同训练步数下模型预测误差与保守估计预测误差和TVD上界对比')
+        plt.xlabel('Test Sample Index')
+        plt.ylabel('Root Mean Squared Error')
+        plt.title('Comparison of Model Prediction Errors, Conservative Estimation Errors,\n and TVD under Different Training Steps in Non-overlapping Regions')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
@@ -250,20 +258,20 @@ def calculate_theoretical_error():
         plt.figure(figsize=(12, 8))
         
         # 绘制样本到随机点的距离
-        plt.plot(non_overlap_data.index, non_overlap_data['distance'], 'b-', linewidth=1, label='保守预测估计误差')
+        plt.plot(non_overlap_data.index, non_overlap_data['distance'], 'b-', linewidth=1, label='Conservative Prediction')
         
         # # 计算并绘制保守预测平均值横线
         # conservative_mean = np.nanmean(conservative_estimates)
-        # plt.axhline(y=conservative_mean, color='black', linestyle='-', linewidth=2, alpha=0.9, label=f'保守预测平均值 ({conservative_mean:.4f})')
+        # plt.axhline(y=conservative_mean, color='black', linestyle='-', linewidth=2, alpha=0.9, label=f'Conservative Prediction Average ({conservative_mean:.4f})')
         
         # 为每个网格大小添加理论损失横线
         if not np.isnan(loss_val):
             plt.axhline(y=loss_val, color='r', linestyle='--', linewidth=2,
-                       label=f'最大理论泛化误差{loss_val:.4f}')
+                       label=f'TVD {loss_val:.4f}')
 
-        plt.xlabel('非重叠区测试样本数')
-        plt.ylabel('均方根误差')
-        plt.title(f'非重叠区TVD上界与保守估计预测误差对比')
+        plt.xlabel('Number of Test Samples in Non-overlapping Regions')
+        plt.ylabel('Root Mean Squared Error')
+        plt.title('Comparison of TVD and Conservative Estimation Prediction Errors in Non-overlapping Regions')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True)
         plt.tight_layout()
@@ -290,40 +298,40 @@ def calculate_theoretical_error():
         # 绘制y轴熵值变化曲线图
         plt.figure(figsize=(12, 8))
         plt.plot(n_y_range, y_entropy_values, 'go-', linewidth=2, markersize=4)
-        plt.xlabel('y轴网格数量')
-        plt.ylabel('熵值')
-        plt.title('y轴划分熵值随网格数量的变化')
+        plt.xlabel('Number of Y-axis Grids')
+        plt.ylabel('Entropy')
+        plt.title('Change of Y-axis Partition Entropy with Grid Number')
         plt.grid(True, alpha=0.3)
-        plt.axvline(x=optimal_n_y, color='red', linestyle='--', linewidth=2, label=f'最优网格数 ({optimal_n_y})')
+        plt.axvline(x=optimal_n_y, color='red', linestyle='--', linewidth=2, label=f'Optimal Grid Number ({optimal_n_y})')
         if not np.isnan(y_entropy_values[-1]):
             plt.text(optimal_n_y + 1, y_entropy_values[-1], f'{y_entropy_values[-1]:.4f}', ha='left', va='center', color='r')
         plt.legend()
         y_radial_entropy_path = f'./泛化误差实验/theoretical_results/{test_file.replace(".csv", "_y_axis_radial_entropy.png")}'
         plt.savefig(y_radial_entropy_path, dpi=300, bbox_inches='tight')
         plt.close()
-        print(f'y轴风格熵值图已保存到: {y_radial_entropy_path}')
+        print(f'y-axis style entropy plot saved to: {y_radial_entropy_path}')
 
         # 创建y轴划分的上下子图
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 14), gridspec_kw={'height_ratios': [1, 1.5]})
         # 上方子图：y轴划分数据分布
-        ax1.scatter(non_overlap_data['y1'], non_overlap_data['y2'], alpha=0.5, color='gray', label='数据点')
+        ax1.scatter(non_overlap_data['y1'], non_overlap_data['y2'], alpha=0.5, color='gray', label='Data Points')
         y_bins = np.linspace(non_overlap_data['y2'].min(), non_overlap_data['y2'].max(), optimal_n_y+1)
         for bin_val in y_bins[1:-1]:
             ax1.axhline(y=bin_val, color='g', linestyle='-', linewidth=1, alpha=0.7)
         ax1.set_xlabel('y1')
         ax1.set_ylabel('y2')
-        ax1.set_title(f'y轴划分数据分布（{optimal_n_y}个区域）')
+        ax1.set_title(f'Y-axis Partition Data Distribution ({optimal_n_y} Regions)')
         ax1.legend()
         ax1.grid(True, alpha=0.3)
 
         # 下方子图：y轴区域样本数量条形图
         y_labels = [f'{y_bins[i]:.2f}-{y_bins[i+1]:.2f}' for i in range(optimal_n_y)]
         bars = ax2.bar(range(optimal_n_y), counts_y, color=plt.cm.viridis(counts_y / max(counts_y)))
-        ax2.set_xlabel('y轴区域')
-        ax2.set_ylabel('样本数量')
-        ax2.set_title(f'y轴划分区域样本数量分布')
+        ax2.set_xlabel('Y-axis Regions')
+        ax2.set_ylabel('Number of Samples')
+        ax2.set_title('Distribution of Sample Counts in Y-axis Partitioned Regions')
         ax2.set_xticks(range(optimal_n_y))
-        ax2.set_xticklabels(y_labels, rotation=45, ha='right')
+        ax2.set_xticklabels(y_labels, rotation=45)
         ax2.tick_params(axis='x', labelsize=4)
         for i, (bar, count) in enumerate(zip(bars, counts_y)):
             ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(counts_y)*0.01, str(count), ha='center', va='bottom')
